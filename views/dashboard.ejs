@@ -8,29 +8,118 @@
       href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="/styles/style.css" />
   </head>
   <body>
     <div class="container">
+      <!-- Navbar -->
       <div class="nav_bar">
         <h1 class="ri-hourglass-fill">DTC</h1>
-  <div class="btn_box">
-  <% if (user) { %>
-    <span class="user_name"><%= user.displayName %></span>
-  <% } else { %>
-    <a href="/auth/google" class="btn">Sign In</a>
-  <% } %>
-  <a href="https://github.com/thebedigupta" class="btn">GitHub</a>
- </div>
-</div>
-         <div class="dashboard-container">
-           <div class="capsule-card" onclick="window.location.href='/create-capsule'">
-           <h2>Create a Capsule</h2>
-           <p>Store your thoughts, memories, and goals safely in time.</p>
-          </div>
-         </div>
+        <div class="btn_box">
+          <% if (user) { %>
+          <span class="user_name"><%= user.displayName %></span>
+          <% } else { %>
+          <a href="/auth/google" class="btn">Sign In</a>
+          <% } %>
+          <a href="https://github.com/thebedigupta" class="btn">GitHub</a>
+        </div>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="dashboard-container">
+        <div class="capsule-card" onclick="openCapsuleForm()">
+          <h2>Create a Capsule</h2>
+          <p>Store your thoughts, memories, and goals safely in time.</p>
+        </div>
+      </div>
+
+      <!-- Modal -->
+      <div id="capsuleModal" class="modal">
+        <div class="modal-content">
+          <span class="close-btn" onclick="closeCapsuleForm()">&times;</span>
+          <h2>Create Capsule</h2>
+          <form id="capsuleForm">
+            <label>Message</label>
+            <textarea id="message" required></textarea>
+
+            <label>Event Link or Notes</label>
+            <input type="text" id="notes" placeholder="Optional" />
+
+            <label>Visible At (Date & Time)</label>
+            <input type="datetime-local" id="visibleAt" required />
+
+            <label>Select Group</label>
+            <select id="groupSelect">
+              <!-- JS will populate -->
+            </select>
+
+            <button type="submit">Save (Not Functional)</button>
+          </form>
         </div>
       </div>
     </div>
+
+    <!-- JavaScript -->
+    <script>
+      // Example: predefined groups (replace later with DB-driven groups)
+      const predefinedGroups = ["Team Alpha", "Batch 2022", "Marketing"];
+      const groupSelect = document.getElementById("groupSelect");
+
+      function openCapsuleForm() {
+        document.getElementById("capsuleModal").style.display = "flex";
+
+        // Populate groups once
+        if (groupSelect.options.length === 0) {
+          if (predefinedGroups.length > 0) {
+            predefinedGroups.forEach((group) => {
+              const option = document.createElement("option");
+              option.value = group;
+              option.textContent = group;
+              groupSelect.appendChild(option);
+            });
+          } else {
+            const option = document.createElement("option");
+            option.value = "None";
+            option.textContent = "None";
+            groupSelect.appendChild(option);
+          }
+        }
+      }
+
+      function closeCapsuleForm() {
+        document.getElementById("capsuleModal").style.display = "none";
+      }
+
+      // Optional: close modal when clicked outside
+      window.onclick = function (e) {
+        const modal = document.getElementById("capsuleModal");
+        if (e.target === modal) {
+          modal.style.display = "none";
+        }
+      };
+
+      // Handle form submit (only alert for now)
+      document
+        .getElementById("capsuleForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const data = {
+            message: document.getElementById("message").value,
+            notes: document.getElementById("notes").value,
+            visibleAt: document.getElementById("visibleAt").value,
+            group: groupSelect.value || "None",
+          };
+
+          console.log("Captured data:", data);
+          alert(
+            "Capsule saved (not functional yet)\n\n" +
+              JSON.stringify(data, null, 2)
+          );
+
+          closeCapsuleForm(); // Hide modal after submit
+          document.getElementById("capsuleForm").reset(); // Clear form
+        });
+    </script>
   </body>
 </html>

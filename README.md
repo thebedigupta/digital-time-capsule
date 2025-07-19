@@ -1,36 +1,45 @@
-# 🕒 Digital Time Capsule
+# 🕒 Secure Digital Time Capsule
 
-A simple web-based application that allows users to create and store digital time capsules — personal messages or notes that can only be viewed after a set unlock date.
-
-Built using **Node.js**, **Express**, **MongoDB**, and **EJS**.
+A secure, time-locked digital capsule system where specific recipients (students) can access a shared hackathon link only **after a specified unlock time**, and only if their **email or roll number matches** what was predefined in the capsule.
 
 ---
 
-## 📌 About the Project
+## 📌 Project Overview
 
-This project simulates a virtual version of a traditional time capsule. Users can write messages and set a future unlock date. Until that date, the content remains locked and hidden.
+This project allows the creation of **digital capsules** containing sensitive content (such as a hackathon link), which:
+
+- Can only be accessed **after a certain date and time**
+- Are protected by recipient identity (email or roll number)
+- Are accessible through **unique capsule links**
 
 ---
 
 ## 🚀 Features
 
-- 📝 **Create a Time Capsule**
+- 📝 **Create Capsules**
 
-  - Title, message, and a future unlock date.
+  - Input a message or link (e.g., hackathon link)
+  - Specify unlock date and time
+  - Add allowed recipient(s) via email or roll number
 
-- 🕒 **Time Lock System**
+- 🔐 **Recipient-Based Access**
 
-  - Capsules remain locked and hidden until the unlock date is reached.
+  - Capsule is accessible only to students whose email or roll number matches
+  - Others are shown an “Access Denied” message
 
-- 📂 **View All Capsules**
+- ⏳ **Time Lock System**
 
-  - Capsules are listed as "Locked" or "Unlocked" based on current time.
+  - Capsules remain locked until the specified unlock time
 
-- 🧠 **Simple and Intuitive UI**
+- 🔗 **Unique Access Links**
 
-  - Clean interface built with EJS and Bootstrap (or plain CSS).
+  - Capsules generate shareable, secure URLs like:
+    ```
+    /capsule/:id
+    ```
 
-- 🔐 _(Optional/Upcoming)_ User login system and email reminders.
+- 🌐 **Simple Web Interface**
+  - Built with EJS and Express for easy interaction
 
 ---
 
@@ -39,5 +48,6 @@ This project simulates a virtual version of a traditional time capsule. Users ca
 - **Backend:** Node.js, Express.js
 - **Frontend:** EJS, HTML, CSS
 - **Database:** MongoDB with Mongoose
-- **Others:** Date handling with native JS
+- **Environment:** dotenv for config management
 
+---

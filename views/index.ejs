@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Time Capsule</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles/style.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav_bar">
+        <h1 class="ri-hourglass-fill">DTC</h1>
+        <div class="btn_box">
+          <input type="button" value="Sign In" onclick="window.location.href='http://localhost:3000/auth/google'" />
+          <input type="button" value="GitHub" />
+        </div>
+      </div>
+      <div class="main_container">
+       <!-- LEFT: Title and Description -->
+      <div class="card_left">
+        <h1>Digital <br />Time <br />Capsule</h1>
+    <p>
+      Securely store your links and share it with intended recipients only.
+      The link will unlock based on the date and time you set.
+    </p>
+    <div class="features">
+      🔐 Secure | 📅 Time-Locked | 🎯 Recipient-Specific
+    </div>
+  </div>
+
+  <!-- RIGHT: Sign in buttons -->
+  <div class="card_right">
+    <div class="circle_background"></div> <!-- circle background shape -->
+    <button class="google_btn" onclick="window.location.href='http://localhost:3000/auth/google'">
+  Sign in with Google
+</button>
+    <button class="create_btn">Create New Account</button>
+  </div>
+</div>
+
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

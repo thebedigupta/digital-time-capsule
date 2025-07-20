@@ -5,7 +5,8 @@ const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
 const connectDB = require("./config/db");
-connectDB(); // nodeConnect to MongoDB first
+const MongoStore = require("connect-mongo"); // ✅ Add this
+connectDB(); // Connect to MongoDB first
 const Capsule = require("./models/capsule");
 
 const capsuleRoutes = require("./routes/capsule");
@@ -34,6 +35,13 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false, // ✅ only save sessions if needed
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI, // ✅ Load from .env
+      collectionName: "sessions",
+    }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    },
   })
 );
 
@@ -53,7 +61,6 @@ app.get("/", (req, res) => {
 });
 
 // Dashboard route — user must be authenticated to access
-
 app.get("/dashboard", async (req, res) => {
   if (!req.user) return res.redirect("/auth/google");
 

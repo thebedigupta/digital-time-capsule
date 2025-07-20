@@ -4,6 +4,11 @@ require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
+const connectDB = require("./config/db");
+connectDB(); // nodeConnect to MongoDB first
+const Capsule = require("./models/capsule");
+
+const capsuleRoutes = require("./routes/capsule");
 
 require("./config/passport"); // Passport config file (Google OAuth, etc.)
 
@@ -24,18 +29,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Setup session middleware (required for login sessions)
-// NOTE: `secret` must be kept safe (from .env file)
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
-    resave: false, // don’t save session if unmodified
-    saveUninitialized: true, // save new sessions
+    resave: false,
+    saveUninitialized: false, // ✅ only save sessions if needed
   })
 );
 
 // Initialize Passport for authentication handling
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
+app.use("/capsule", capsuleRoutes);
 
 // =================== ROUTES ===================
 
@@ -48,28 +53,22 @@ app.get("/", (req, res) => {
 });
 
 // Dashboard route — user must be authenticated to access
-app.get("/dashboard", (req, res) => {
+
+app.get("/dashboard", async (req, res) => {
   if (!req.user) return res.redirect("/auth/google");
 
-  // Simulate fetching groups for logged-in user
-  let groups = getGroupsForUser(req.user); // This should be replaced with DB call
-
-  // Fallback to default group "None" if user has no assigned groups
-  if (!groups || groups.length === 0) {
-    groups = [{ id: "none", name: "None" }];
-  }
-
-  // Render dashboard with user and their groups
-  res.render("dashboard", { user: req.user, groups });
-});
-
-// API route — fetch all groups created by admin (for dropdowns, etc.)
-app.get("/admin/groups", async (req, res) => {
   try {
-    const groups = await Group.find(); // Replace with filter if needed (e.g., Group.find({ createdBy: req.user._id }))
-    res.json(groups); // Return as JSON for frontend use
+    // Fetch all capsules created by the logged-in user
+    const capsules = await Capsule.find({ createdBy: req.user.id }).lean();
+
+    res.render("dashboard", {
+      user: req.user,
+      groups: [], // No groups now
+      capsules,
+    });
   } catch (err) {
-    res.status(500).json({ error: "Failed to load groups" });
+    console.error("Dashboard error:", err);
+    res.status(500).send("Internal Server Error");
   }
 });
 

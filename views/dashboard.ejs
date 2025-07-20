@@ -25,72 +25,100 @@
         </div>
       </div>
 
-      <!-- Dashboard -->
-      <div class="dashboard-container">
-        <div class="capsule-card" onclick="openCapsuleForm()">
-          <h2>Create a Capsule</h2>
-          <p>Store your thoughts, memories, and goals safely in time.</p>
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+        <% if (capsules && capsules.length > 0) { %> <%
+        capsules.forEach(function(capsule) { %>
+        <div class="capsule-card">
+          <h3><%= capsule.message %></h3>
+
+          <% if (capsule.eventLink) { %>
+          <p>
+            <a href="<%= capsule.eventLink %>" target="_blank">Event Link</a>
+          </p>
+          <% } %>
+
+          <p>
+            <strong>Visible At:</strong>
+            <%= new Date(capsule.visibleAt).toLocaleString() %>
+          </p>
+
+          <% if (capsule.shareId) { %>
+          <p>
+            <strong>Share Link:</strong>
+            <a href="/capsule/view/<%= capsule.shareId %>" target="_blank">
+              /capsule/view/<%= capsule.shareId %>
+            </a>
+            <button
+              onclick="copyToClipboard('<%= '/capsule/view/' + capsule.shareId %>')"
+            >
+              Copy Link
+            </button>
+          </p>
+          <% } %>
         </div>
+        <% }) %> <% } else { %>
+        <div class="capsule-card">
+          <p>No capsules yet. Start by creating one!</p>
+        </div>
+        <% } %>
       </div>
+
+      <!-- Floating Add Button -->
+      <button class="fab" onclick="openCapsuleForm()">
+        <i class="ri-add-line"></i>
+      </button>
 
       <!-- Modal -->
       <div id="capsuleModal" class="modal">
         <div class="modal-content">
           <span class="close-btn" onclick="closeCapsuleForm()">&times;</span>
           <h2>Create Capsule</h2>
-          <form id="capsuleForm">
+          <form id="capsuleForm" method="POST" action="/capsule">
             <label>Message</label>
-            <textarea id="message" required></textarea>
+            <textarea name="message" id="message" required></textarea>
 
             <label>Event Link or Notes</label>
-            <input type="text" id="notes" placeholder="Optional" />
+            <input
+              type="text"
+              name="eventLink"
+              id="eventLink"
+              placeholder="Optional"
+            />
 
             <label>Visible At (Date & Time)</label>
-            <input type="datetime-local" id="visibleAt" required />
+            <input
+              type="datetime-local"
+              name="visibleAt"
+              id="visibleAt"
+              required
+            />
 
             <label>Select Group</label>
-            <select id="groupSelect">
-              <!-- JS will populate -->
+            <select name="group" id="groupSelect">
+              <% if (groups && groups.length > 0) { %> <%
+              groups.forEach(function(group) { %>
+              <option value="<%= group.name %>"><%= group.name %></option>
+              <% }) %> <% } else { %>
+              <option value="None">None</option>
+              <% } %>
             </select>
 
-            <button type="submit">Save (Not Functional)</button>
+            <button type="submit">Save Capsule</button>
           </form>
         </div>
       </div>
     </div>
 
-    <!-- JavaScript -->
     <script>
-      // Example: predefined groups (replace later with DB-driven groups)
-      const predefinedGroups = ["Team Alpha", "Batch 2022", "Marketing"];
-      const groupSelect = document.getElementById("groupSelect");
-
       function openCapsuleForm() {
         document.getElementById("capsuleModal").style.display = "flex";
-
-        // Populate groups once
-        if (groupSelect.options.length === 0) {
-          if (predefinedGroups.length > 0) {
-            predefinedGroups.forEach((group) => {
-              const option = document.createElement("option");
-              option.value = group;
-              option.textContent = group;
-              groupSelect.appendChild(option);
-            });
-          } else {
-            const option = document.createElement("option");
-            option.value = "None";
-            option.textContent = "None";
-            groupSelect.appendChild(option);
-          }
-        }
       }
 
       function closeCapsuleForm() {
         document.getElementById("capsuleModal").style.display = "none";
       }
 
-      // Optional: close modal when clicked outside
       window.onclick = function (e) {
         const modal = document.getElementById("capsuleModal");
         if (e.target === modal) {
@@ -98,28 +126,12 @@
         }
       };
 
-      // Handle form submit (only alert for now)
-      document
-        .getElementById("capsuleForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          const data = {
-            message: document.getElementById("message").value,
-            notes: document.getElementById("notes").value,
-            visibleAt: document.getElementById("visibleAt").value,
-            group: groupSelect.value || "None",
-          };
-
-          console.log("Captured data:", data);
-          alert(
-            "Capsule saved (not functional yet)\n\n" +
-              JSON.stringify(data, null, 2)
-          );
-
-          closeCapsuleForm(); // Hide modal after submit
-          document.getElementById("capsuleForm").reset(); // Clear form
+      function copyToClipboard(linkPath) {
+        const fullUrl = window.location.origin + linkPath;
+        navigator.clipboard.writeText(fullUrl).then(() => {
+          alert("Link copied to clipboard!");
         });
+      }
     </script>
   </body>
 </html>

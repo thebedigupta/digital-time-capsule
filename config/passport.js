@@ -1,14 +1,15 @@
+// config/passport.js
+
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
-// Serialize user into the session
+// Save full user profile
 passport.serializeUser((user, done) => {
-  done(null, user);
+  done(null, user); // Store full Google profile in session
 });
 
-// Deserialize user from the session
 passport.deserializeUser((user, done) => {
-  done(null, user);
+  done(null, user); // Restore full user from session
 });
 
 // Use Google OAuth Strategy
@@ -21,6 +22,7 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       // You can save user in DB here if needed
+      // For now, we just pass the profile forward
       return done(null, profile);
     }
   )

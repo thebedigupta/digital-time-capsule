@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Capsule</title>
+    <link rel="stylesheet" href="/styles/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="capsule-card">
+        <h2>⏳ Time Capsule</h2>
+        <p><strong>Message:</strong> <%= capsule.message %></p>
+        <% if (capsule.eventLink) { %>
+          <p><a href="<%= capsule.eventLink %>" target="_blank">Event Link</a></p>
+        <% } %>
+        <p><strong>Visible Since:</strong> <%= new Date(capsule.visibleAt).toLocaleString() %></p>
+      </div>
+    </div>
+  </body>
+</html>
